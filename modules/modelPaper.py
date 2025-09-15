@@ -19,8 +19,7 @@ import sys
 
 
 __all__ = [
-    'PHOSCnet_temporalpooling_paper',
-    "FixedPatchPrompter"
+    'PHOSCnet_temporalpooling_paper'
 ]
 
 
