@@ -67,7 +67,7 @@ def get_args_parser():
     parser.add_argument('--language', type=str, default='eng', choices=['eng', 'nor', 'gw'], help='language which help decide which phosc representation to use')
     parser.add_argument("--prompts", type =int, default = 0)
     #parser.add_argument("--promptsWeight", type =int, default = 0)
-    parser.add_argument('--promptsWeight', type=str, help='the path to pretrained weights file')
+    parser.add_argument('--promptsWeight', type=str, help='Neglect',default="")
 
 
     return parser
