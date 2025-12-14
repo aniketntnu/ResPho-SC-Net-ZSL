@@ -8,5 +8,5 @@ Instruction to run
 1. Create Virtual environment from file env.txt
 
 
-2.  use run.sh to run
+2.  use command python3 main_1.py
 
