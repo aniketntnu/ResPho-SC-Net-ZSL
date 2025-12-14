@@ -7,5 +7,6 @@ Instruction to run
 
 1. Create Virtual environment from file env.txt
 
-2. Run main.py
+
+2.  use run.sh to run
 
