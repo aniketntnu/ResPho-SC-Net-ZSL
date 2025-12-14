@@ -37,56 +37,126 @@ import torch.nn as nn
 
 # function for defining all the commandline parameters
 def get_args_parser():
+
     parser = argparse.ArgumentParser('Main', add_help=False)
-
-    # Model mode:
-    parser.add_argument('--mode', type=str, default="train",choices=['train', 'test', 'pass'], required=False,
-                        help='train or test a model')
-
-    # Testing method gzsl or zsl
-    parser.add_argument('--testing_mode', type=str, choices=['zsl', 'gzsl', 'gzslAni'], default="gzsl",required=False,
-                        help='zsl or gzsl testing method')
-    parser.add_argument('--words_list', default=None, required=False,
-                        help='zsl or gzsl testing method')             
     
-    # Model settings
-    parser.add_argument('--name', type=str, help='Name of run')
-    parser.add_argument('--model', type=str, help='Name of model')
-    parser.add_argument('--pretrained_weights', type=str, help='the path to pretrained weights file')
+    if 0:
 
-    # Dataset folder paths
-    parser.add_argument('--train_csv', type=str, help='The train csv')
-    parser.add_argument('--train_folder', type=str, help='The train root folder')
-    parser.add_argument('--valid_csv', type=str, help='The valid csv')
-    parser.add_argument('--valid_folder', type=str, help='The valid root folder')
+        # Model mode:
+        parser.add_argument('--mode', type=str, default="train",choices=['train', 'test', 'pass'], required=False,
+                            help='train or test a model')
 
-    parser.add_argument('--test_csv_seen', type=str, help='The seen test csv')
-    parser.add_argument('--test_folder_seen', type=str, help='The seen test root folder')
+        # Testing method gzsl or zsl
+        parser.add_argument('--testing_mode', type=str, choices=['zsl', 'gzsl', 'gzslAni'], default="gzsl",required=False,
+                            help='zsl or gzsl testing method')
+        parser.add_argument('--words_list', default=None, required=False,
+                            help='zsl or gzsl testing method')             
+        
+        # Model settings
+        parser.add_argument('--name', type=str, help='Name of run')
+        parser.add_argument('--model', type=str, help='Name of model')
+        parser.add_argument('--pretrained_weights', type=str, help='the path to pretrained weights file')
 
-    parser.add_argument('--test_csv_unseen', type=str, help='The unseen test csv')
-    parser.add_argument('--test_folder_unseen', type=str, help='The unseen test root folder')
+        # Dataset folder paths
+        parser.add_argument('--train_csv', type=str, help='The train csv')
+        parser.add_argument('--train_folder', type=str, help='The train root folder')
+        parser.add_argument('--valid_csv', type=str, help='The valid csv')
+        parser.add_argument('--valid_folder', type=str, help='The valid root folder')
 
-    # Dataloader settings
-    parser.add_argument('--batch_size', type=int, default=32, help='number of samples per iteration in the epoch')
-    parser.add_argument('--num_workers', default=5, type=int)
+        parser.add_argument('--test_csv_seen', type=str, help='The seen test csv')
+        parser.add_argument('--test_folder_seen', type=str, help='The seen test root folder')
 
-    # optimizer settings
-    parser.add_argument('--lr', type=float, default=0.0001, help='The learning rate')
+        parser.add_argument('--test_csv_unseen', type=str, help='The unseen test csv')
+        parser.add_argument('--test_folder_unseen', type=str, help='The unseen test root folder')
 
-    # trainng related parameters
-    parser.add_argument('--epochs', type=int, default=30, help='Number of epochs to train for')
+        # Dataloader settings
+        parser.add_argument('--batch_size', type=int, default=32, help='number of samples per iteration in the epoch')
+        parser.add_argument('--num_workers', default=5, type=int)
+
+        # optimizer settings
+        parser.add_argument('--lr', type=float, default=0.0001, help='The learning rate')
+
+        # trainng related parameters
+        parser.add_argument('--epochs', type=int, default=30, help='Number of epochs to train for')
+
+        parser.add_argument('--stopCode', type=int, default=9999, help='stopping code')
+        parser.add_argument('--flagFile', type=str, default="flag.txt", help='flagFile')
+
+        # model related
+        parser.add_argument('--phos_size', type=int, default=165, help='Phos representation size')
+        parser.add_argument('--phoc_size', type=int, default=604, help='Phoc representation size')
+        parser.add_argument('--language', type=str, default='eng', choices=['eng', 'nor', 'gw'], help='language which help decide which phosc representation to use')
+        parser.add_argument("--prompts", type =int, default = 0)
+        #parser.add_argument("--promptsWeight", type =int, default = 0)
+        parser.add_argument('--promptsWeight', type=str, help='Neglect',default="")
+
+
+    # ===============================
+    # Run / experiment control
+    # ===============================
+    parser.add_argument('--name', type=str, default='resphoscnet')
+    parser.add_argument('--model', type=str, default='ResNet18Phosc')
+
+    # ===============================
+    # Mode
+    # ===============================
+    parser.add_argument('--mode', type=str,
+                        choices=['train', 'test', 'pass'],
+                        default='train')
+
+    # ===============================
+    # Dataset paths (DEFAULTED)
+    # ===============================
+    parser.add_argument('--train_csv', type=str,
+                        default='./data/IAM_train.csv')
+    parser.add_argument('--train_folder', type=str,
+                        default='/cluster/datastore/aniketag/allData/global/D1/projects/ZeroShot_Word_Recognition/Transformer_ZeroShot_Word_Recognition/joakims_work/myphosc/image_data/IAM_Data/IAM_train')
+
+    parser.add_argument('--valid_csv', type=str,
+                        default='./data/IAM_train.csv')
+    parser.add_argument('--valid_folder', type=str,
+                        default='/cluster/datastore/aniketag/allData/global/D1/projects/ZeroShot_Word_Recognition/Transformer_ZeroShot_Word_Recognition/joakims_work/myphosc/image_data/IAM_Data/IAM_train')
+
+    parser.add_argument('--test_csv_seen', type=str,
+                        default='./data/IAM_train.csv')
+    parser.add_argument('--test_folder_seen', type=str,
+                        default='/cluster/datastore/aniketag/allData/global/D1/projects/ZeroShot_Word_Recognition/Transformer_ZeroShot_Word_Recognition/joakims_work/myphosc/image_data/IAM_Data/IAM_train')
+
+    parser.add_argument('--test_csv_unseen', type=str,
+                        default='./data/IAM_train.csv')
+    parser.add_argument('--test_folder_unseen', type=str,
+                        default='/cluster/datastore/aniketag/allData/global/D1/projects/ZeroShot_Word_Recognition/Transformer_ZeroShot_Word_Recognition/joakims_work/myphosc/image_data/IAM_Data/IAM_train')
+
+    # ===============================
+    # Training hyperparameters
+    # ===============================
+    parser.add_argument('--epochs', type=int, default=1)
+    parser.add_argument('--batch_size', type=int, default=4)
+    parser.add_argument('--lr', type=float, default=1e-4)
+    parser.add_argument('--num_workers', type=int, default=5)
+
+    # ===============================
+    # Model-specific
+    # ===============================
+    parser.add_argument('--phos_size', type=int, default=165)
+    parser.add_argument('--phoc_size', type=int, default=604)
+    parser.add_argument('--language', type=str,
+                        choices=['eng', 'nor', 'gw'],
+                        default='eng')
+
+    # ===============================
+    # Loss
+    # ===============================
+    parser.add_argument('--use_cosine_loss', action='store_true')
+    parser.add_argument('--device', type=str, default="cuda:0", help='device to use for training / testing')
+
+    parser.add_argument("--prompts", type =int, default = 0)
+    #parser.add_argument("--promptsWeight", type =int, default = 0)
+    parser.add_argument('--promptsWeight', type=str, help='Neglect',default="")
 
     parser.add_argument('--stopCode', type=int, default=9999, help='stopping code')
     parser.add_argument('--flagFile', type=str, default="flag.txt", help='flagFile')
 
-    # model related
-    parser.add_argument('--phos_size', type=int, default=165, help='Phos representation size')
-    parser.add_argument('--phoc_size', type=int, default=604, help='Phoc representation size')
-    parser.add_argument('--language', type=str, default='eng', choices=['eng', 'nor', 'gw'], help='language which help decide which phosc representation to use')
-    parser.add_argument("--prompts", type =int, default = 0)
-    #parser.add_argument("--promptsWeight", type =int, default = 0)
-    parser.add_argument('--promptsWeight', type=str, help='Neglect',default="")
-    parser.add_argument('--device', type=str, default="cuda:0", help='device to use for training / testing')
 
     return parser
 
@@ -236,7 +306,7 @@ def main(args):
 
 
     device = args.device #
-    if torch.cuda.is_available():
+    if 0:#torch.cuda.is_available():
         device = "cuda:0"
         if torch.cuda.device_count() > 1:
             model = nn.DataParallel(model)
@@ -296,8 +366,8 @@ def main(args):
         best_epoch = 0
         for epoch in range(1, args.epochs + 1):
             
-            logger.info(f'Starting epoch {epoch}/{args.epochs}')
-            print(f'\nEpoch {epoch}/{args.epochs}')
+            logger.info(f'1.Starting epoch {epoch}/{args.epochs}')
+            print(f'\n1.Epoch {epoch}/{args.epochs}')
             with open(args.flagFile, "r") as f:
                 flag = f.read().strip()
 
@@ -311,12 +381,19 @@ def main(args):
 
             if args.prompts == 0:
                 promptModel = ""
+                
+                logger.info(f'1.MSE calc')
+                print(f'1.MSE calc')
                 mean_loss = train_one_epoch(model, 
                                             criterion,
                                             data_loader_train,
                                             opt, 
                                             device,
                                             epoch,promptModel,args)
+    
+                logger.info(f'2.MSE calc')
+                print(f'2.MSE calc')
+
             elif args.prompts == 1: 
                 mean_loss = train_one_epoch(model, criterion, data_loader_train, opt, device, epoch,promptModel,args)
             logger.info(f'Epoch {epoch} training complete. Mean loss: {mean_loss:.4f}')
@@ -347,7 +424,7 @@ def main(args):
             with open(args.name + '/' + 'log.csv', 'a') as f:
                 f.write(f'{epoch},{mean_loss},{acc},{opt.param_groups[0]["lr"]}\n')
 
-            if (epoch%10)-1 == 0:
+            if (epoch%10)-1 == 0 and epoch>1:
 
                 #print("\n\t calling test")/zslAccuracyTest
 
